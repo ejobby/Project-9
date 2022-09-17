@@ -97,4 +97,44 @@ Then on the Server, you can check the archive of the build with this command
 
 ## Configure Jenkins to copy files to NFS server via SSH
 
+### Install "Publish Over SSH" plugin.
 
+On main dashboard select "Manage Jenkins" and choose "Manage Plugins" menu item. Then on the availabe, search for the Publish Over SSH and then install it
+
+![Publish Over SSH](./Images/publish-ssh-install.png)
+
+### Configure the job/project to copy artifacts over to NFS server
+
+On main dashboard select "Manage Jenkins" and choose "Configure System" menu item. 
+
+Scroll down to Publish over SSH plugin configuration section and configure it to be able to connect to your NFS server
+
+Supply your Private Key and other info as stated in the diagram below.
+
+![SSH Configuration](./Images/ssh-config-test.png)
+
+Then save the configuration, open your Jenkins job/project configuration page and add another one "Post-build Action"
+
+![Send Build](./Images/send_build.png)
+
+Configure it to send all files probuced by the build into our previouslys define remote directory. In our case we want to copy all files and directories – so we use **
+
+![Send Build1](./Images/send_build1.png)
+
+Save this configuration and go ahead, change something in README.MD file in your GitHub Tooling repository.
+
+This Build will fail because of the permission of owner of the directories on the NFS Server. So you have to log into your NFS Server terminal and change the permission
+
+`sudo chown -R nobody:nobody /mnt`
+
+`sudo chmod -R 777 /mnt`
+
+![Change Permission](./Images/change-permission.png)
+
+Then Click on the Build Now on the Jenkins Then it will record Success and confirm through the Console Output
+
+![Final Build Console](./Images/ssh-build-success.png)
+
+Then Confirm from the Terminal Whether it actually copy the files from the Github to the Directories
+
+![Copy Confirmation](./Images/nfs-confirmation.png)
